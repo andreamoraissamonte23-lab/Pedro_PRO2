@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Virtual Gamer PC</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    overflow:hidden;
+    color:#fff;
+    background:#070912;
+}
+
+/* =========================
+   DESKTOP
+========================= */
+
+.desktop{
+    width:100vw;
+    height:100vh;
+    position:relative;
+    background:
+        radial-gradient(circle at 20% 20%,#312080 0%,transparent 30%),
+        radial-gradient(circle at 80% 75%,#00556b 0%,transparent 30%),
+        linear-gradient(135deg,#070912,#11162a);
+}
+
+/* =========================
+   ÍCONES DO DESKTOP
+========================= */
+
+.desktop-icons{
+    position:absolute;
+    top:25px;
+    left:20px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.desktop-icon{
+    width:95px;
+    padding:10px;
+    text-align:center;
+    border-radius:10px;
+    cursor:pointer;
+    user-select:none;
+}
+
+.desktop-icon:hover{
+    background:rgba(255,255,255,.12);
+}
+
+.desktop-icon .emoji{
+    font-size:38px;
+    display:block;
+}
+
+.desktop-icon span{
+    font-size:12px;
+}
+
+/* =========================
+   JANELA
+========================= */
+
+.window{
+    position:absolute;
+    width:min(1000px,92vw);
+    height:min(650px,78vh);
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background:#0d1120;
+    border:1px solid #353d61;
+    border-radius:14px;
+    box-shadow:0 25px 80px rgba(0,0,0,.7);
+    overflow:hidden;
+    display:none;
+    z-index:5;
+}
+
+.window.active{
+    display:block;
+}
+
+.titlebar{
+    height:48px;
+    padding:0 14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:#171c31;
+    border-bottom:1px solid #303752;
+}
+
+.titlebar h2{
+    font-size:15px;
+}
+
+.window-buttons{
+    display:flex;
+    gap:7px;
+}
+
+.window-buttons button{
+    width:29px;
+    height:29px;
+    border:0;
+    border-radius:6px;
+    color:#fff;
+    cursor:pointer;
+}
+
+.minimize{
+    background:#444b66;
+}
+
+.close{
+    background:#df3f50;
+}
+
+/* =========================
+   GAME CENTER
+========================= */
+
+.game-layout{
+    display:flex;
+    height:calc(100% - 48px);
+}
+
+.game-sidebar{
+    width:190px;
+    padding:15px;
+    background:#090d1b;
+    border-right:1px solid #292f49;
+}
+
+.game-sidebar button{
+    width:100%;
+    border:0;
+    padding:12px;
+    margin-bottom:7px;
+    border-radius:8px;
+    text-align:left;
+    background:transparent;
+    color:#aeb5d4;
+    cursor:pointer;
+}
+
+.game-sidebar button:hover,
+.game-sidebar button.selected{
+    background:#252c4b;
+    color:#fff;
+}
+
+.game-content{
+    flex:1;
+    padding:20px;
+    overflow:auto;
+}
+
+.game-top{
+    display:flex;
+    gap:12px;
+    margin-bottom:20px;
+}
+
+.search{
+    flex:1;
+    padding:12px;
+    border-radius:8px;
+    border:1px solid #363d5b;
+    background:#171c30;
+    color:#fff;
+    outline:none;
+}
+
+.player{
+    background:#171c30;
+    padding:12px 15px;
+    border-radius:8px;
+}
+
+/* =========================
+   JOGOS
+========================= */
+
+.games{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+    gap:15px;
+}
+
+.game{
+    background:#151a2d;
+    border:1px solid #29304a;
+    border-radius:12px;
+    overflow:hidden;
+    transition:.2s;
+}
+
+.game:hover{
+    transform:translateY(-4px);
+    border-color:#6373ff;
+}
+
+.cover{
+    height:115px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:50px;
+    background:linear-gradient(135deg,#24155b,#075467);
+}
+
+.game-info{
+    padding:12px;
+}
+
+.game-info h3{
+    margin-bottom:5px;
+}
+
+.game-info p{
+    color:#858dab;
+    font-size:12px;
+    margin-bottom:10px;
+}
+
+.play{
+    width:100%;
+    padding:9px;
+    border:0;
+    border-radius:7px;
+    background:#596aff;
+    color:#fff;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.play:hover{
+    background:#7482ff;
+}
+
+/* =========================
+   BUILD DO PC
+========================= */
+
+.build-window{
+    height:min(650px,78vh);
+}
+
+.build-content{
+    padding:25px;
+    height:calc(100% - 48px);
+    overflow:auto;
+}
+
+.build-title{
+    margin-bottom:20px;
+}
+
+.build-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
+}
+
+.part{
+    background:#151a2d;
+    border:1px solid #2d3552;
+    border-radius:12px;
+    padding:18px;
+}
+
+.part-icon{
+    font-size:35px;
+    margin-bottom:10px;
+}
+
+.part h3{
+    font-size:14px;
+    color:#8e98bc;
+    margin-bottom:5px;
+}
+
+.part strong{
+    font-size:17px;
+}
+
+.part p{
+    color:#858dab;
+    font-size:12px;
+    margin-top:6px;
+}
+
+.total{
+    margin-top:20px;
+    padding:20px;
+    border-radius:12px;
+    background:#171d34;
+    border:1px solid #353e61;
+}
+
+.total strong{
+    color:#70e1ff;
+    font-size:25px;
+}
+
+/* =========================
+   DESEMPENHO
+========================= */
+
+.performance{
+    padding:25px;
+    height:calc(100% - 48px);
+    overflow:auto;
+}
+
+.performance-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;
+    margin-top:20px;
+}
+
+.metric{
+    padding:20px;
+    border-radius:12px;
+    background:#151a2d;
+    border:1px solid #2c3450;
+}
+
+.metric h3{
+    color:#8e98ba;
+    font-size:13px;
+}
+
+.metric strong{
+    display:block;
+    margin-top:8px;
+    font-size:30px;
+}
+
+.bar{
+    width:100%;
+    height:8px;
+    margin-top:15px;
+    border-radius:10px;
+    background:#252b42;
+    overflow:hidden;
+}
+
+.bar-fill{
+    height:100%;
+    width:50%;
+    background:#5d6fff;
+    transition:.5s;
+}
+
+/* =========================
+   CONFIGURAÇÕES
+========================= */
+
+.settings{
+    padding:25px;
+}
+
+.setting{
+    padding:15px;
+    margin-bottom:12px;
+    border-radius:10px;
+    background:#151a2d;
+}
+
+.setting label{
+    display:block;
+    color:#9ba4c5;
+    margin-bottom:8px;
+}
+
+.setting select{
+    width:100%;
+    padding:10px;
+    border-radius:7px;
+    background:#0d1120;
+    color:#fff;
+    border:1px solid #353c59;
+}
+
+/* =========================
+   TASKBAR
+========================= */
+
+.taskbar{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:58px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 15px;
+    background:rgba(8,10,19,.94);
+    backdrop-filter:blur(12px);
+    border-top:1px solid #293047;
+    z-index:20;
+}
+
+.start-button{
+    border:0;
+    padding:10px 17px;
+    border-radius:8px;
+    background:#596aff;
+    color:#fff;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.task-buttons{
+    display:flex;
+    gap:8px;
+}
+
+.task-buttons button{
+    width:40px;
+    height:40px;
+    border:0;
+    border-radius:8px;
+    background:#171c30;
+    color:#fff;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.clock{
+    color:#c6cce3;
+    font-size:13px;
+}
+
+/* =========================
+   START MENU
+========================= */
+
+.start-menu{
+    position:absolute;
+    bottom:68px;
+    left:15px;
+    width:290px;
+    padding:18px;
+    background:#10152a;
+    border:1px solid #353d60;
+    border-radius:14px;
+    box-shadow:0 15px 60px rgba(0,0,0,.65);
+    display:none;
+    z-index:30;
+}
+
+.start-menu.active{
+    display:block;
+}
+
+.start-menu h2{
+    margin-bottom:15px;
+}
+
+.start-item{
+    padding:13px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.start-item:hover{
+    background:#252c4b;
+}
+
+/* =========================
+   NOTIFICAÇÃO
+========================= */
+
+.notification{
+    position:absolute;
+    right:20px;
+    bottom:75px;
+    padding:14px 18px;
+    border-radius:10px;
+    background:#171d32;
+    border:1px solid #3a4261;
+    display:none;
+    z-index:50;
+}
+
+.notification.show{
+    display:block;
+}
+
+/* =========================
+   MINI GAME
+========================= */
+
+.game-screen{
+    height:calc(100% - 48px);
+    position:relative;
+    background:#05070e;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.game-area{
+    width:90%;
+    height:80%;
+    position:relative;
+    border:2px solid #35406a;
+    border-radius:12px;
+    background:
+        linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+    background-size:30px 30px;
+}
+
+.player-character{
+    position:absolute;
+    font-size:35px;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    cursor:pointer;
+}
+
+.game-info-bar{
+    position:absolute;
+    top:10px;
+    left:10px;
+    right:10px;
+    display:flex;
+    justify-content:space-between;
+    color:#9da8d0;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:650px){
+
+    .game-sidebar{
+        width:120px;
+    }
+
+    .game-sidebar button{
+        font-size:11px;
+    }
+
+    .game-top{
+        flex-direction:column;
+    }
+
+    .window{
+        width:95vw;
+        height:78vh;
+    }
+
+    .desktop-icons{
+        left:5px;
+    }
+
+    .desktop-icon{
+        width:75px;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="desktop">
+
+    <!-- =====================
+         ÍCONES
+    ====================== -->
+
+    <div class="desktop-icons">
+
+        <div class="desktop-icon" onclick="openWindow('gameWindow')">
+            <div class="emoji">🎮</div>
+            <span>Central de Jogos</span>
+        </div>
+
+        <div class="desktop-icon" onclick="openWindow('buildWindow')">
+            <div class="emoji">🖥️</div>
+            <span>Meu PC</span>
+        </div>
+
+        <div class="desktop-icon" onclick="openWindow('performanceWindow')">
+            <div class="emoji">📊</div>
+            <span>Desempenho</span>
+        </div>
+
+        <div class="desktop-icon" onclick="openWindow('settingsWindow')">
+            <div class="emoji">⚙️</div>
+            <span>Configurações</span>
+        </div>
+
+    </div>
+
+
+    <!-- =====================
+         CENTRAL DE JOGOS
+    ====================== -->
+
+    <div class="window active" id="gameWindow">
+
+        <div class="titlebar">
+
+            <h2>🎮 Central de Jogos</h2>
+
+            <div class="window-buttons">
+                <button class="minimize"
+                    onclick="minimizeWindow('gameWindow')">−</button>
+
+                <button class="close"
+                    onclick="closeWindow('gameWindow')">×</button>
+            </div>
+
+        </div>
+
+
+        <div class="game-layout">
+
+            <aside class="game-sidebar">
+
+                <button class="selected"
+                    onclick="filterGames('all',this)">
+                    🏠 Biblioteca
+                </button>
+
+                <button
+                    onclick="filterGames('action',this)">
+                    ⚔️ Ação
+                </button>
+
+                <button
+                    onclick="filterGames('racing',this)">
+                    🏎️ Corrida
+                </button>
+
+                <button
+                    onclick="filterGames('sport',this)">
+                    ⚽ Esportes
+                </button>
+
+                <button
+                    onclick="filterGames('favorite',this)">
+                    ⭐ Favoritos
+                </button>
+
+            </aside>
+
+
+            <main class="game-content">
+
+                <div class="game-top">
+
+                    <input
+                        class="search"
+                        id="search"
+                        placeholder="🔍 Procurar jogo..."
+                        oninput="searchGames()">
+
+                    <div class="player">
+                        👤 Player
+                    </div>
+
+                </div>
+
+
+                <h2 style="margin-bottom:15px">
+                    Seus jogos
+                </h2>
+
+
+                <div class="games">
+
+                    <div class="game"
+                        data-name="Cyber Arena"
+                        data-category="action"
+                        data-favorite="true">
+
+                        <div class="cover">🤖</div>
+
+                        <div class="game-info">
+                            <h3>Cyber Arena</h3>
+                            <p>Ação • Online</p>
+
+                            <button class="play"
+                                onclick="launchGame('Cyber Arena')">
+                                ▶ Jogar
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                    <div class="game"
+                        data-name="Speed Legends"
+                        data-category="racing"
+                        data-favorite="false">
+
+                        <div class="cover">🏎️</div>
+
+                        <div class="game-info">
+                            <h3>Speed Legends</h3>
+                            <p>Corrida • 3D</p>
+
+                            <button class="play"
+                                onclick="launchGame('Speed Legends')">
+                                ▶ Jogar
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                    <div class="game"
+                        data-name="Football Stars"
+                        data-category="sport"
+                        data-favorite="true">
+
+                        <div class="cover">⚽</div>
+
+                        <div class="game-info">
+                            <h3>Football Stars</h3>
+                            <p>Esporte • Multiplayer</p>
+
+                            <button class="play"
+                                onclick="launchGame('Football Stars')">
+                                ▶ Jogar
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                    <div class="game"
+                        data-name="Galaxy Battle"
+                        data-category="action"
+                        data-favorite="false">
+
+                        <div class="cover">🚀</div>
+
+                        <div class="game-info">
+                            <h3>Galaxy Battle</h3>
+                            <p>Ação • Ficção</p>
+
+                            <button class="play"
+                                onclick="launchGame('Galaxy Battle')">
+                                ▶ Jogar
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                    <div class="game"
+                        data-name="Street Racer"
+                        data-category="racing"
+                        data-favorite="false">
+
+                        <div class="cover">🏁</div>
+
+                        <div class="game-info">
+                            <h3>Street Racer</h3>
+                            <p>Corrida • Arcade</p>
+
+                            <button class="play"
+                                onclick="launchGame('Street Racer')">
+                                ▶ Jogar
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                    <div class="game"
+                        data-name="Battle Zone"
+                        data-category="action"
+                        data-favorite="true">
+
+                        <div class="cover">🎯</div>
+
+                        <div class="game-info">
+                            <h3>Battle Zone</h3>
+                            <p>Ação • Arena</p>
+
+                            <button class="play"
+                                onclick="launchGame('Battle Zone')">
+                                ▶ Jogar
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================
+         BUILD DO PC
+    ====================== -->
+
+    <div class="window build-window" id="buildWindow">
+
+        <div class="titlebar">
+
+            <h2>🖥️ Meu PC Gamer</h2>
+
+            <div class="window-buttons">
+                <button class="close"
+                    onclick="closeWindow('buildWindow')">
+                    ×
+                </button>
+            </div>
+
+        </div>
+
+
+        <div class="build-content">
+
+            <h1 class="build-title">
+                ⚡ Build Gamer
+            </h1>
+
+            <div class="build-grid">
+
+                <div class="part">
+                    <div class="part-icon">🧠</div>
+                    <h3>PROCESSADOR</h3>
+                    <strong>Ryzen 7 7800X3D</strong>
+                    <p>8 núcleos • 16 threads</p>
+                </div>
+
+
+                <div class="part">
+                    <div class="part-icon">🎮</div>
+                    <h3>PLACA DE VÍDEO</h3>
+                    <strong>RTX 4070 SUPER</strong>
+                    <p>12 GB VRAM</p>
+                </div>
+
+
+                <div class="part">
+                    <div class="part-icon">🧩</div>
+                    <h3>MEMÓRIA RAM</h3>
+                    <strong>32 GB DDR5</strong>
+                    <p>6000 MHz</p>
+                </div>
+
+
+                <div class="part">
+                    <div class="part-icon">💾</div>
+                    <h3>ARMAZENAMENTO</h3>
+                    <strong>SSD NVMe 1 TB</strong>
+                    <p>Alta velocidade</p>
+                </div>
+
+
+                <div class="part">
+                    <div class="part-icon">🔌</div>
+                    <h3>FONTE</h3>
+                    <strong>750 W</strong>
+                    <p>Certificação 80 Plus</p>
+                </div>
+
+
+                <div class="part">
+                    <div class="part-icon">🖥️</div>
+                    <h3>MONITOR</h3>
+                    <strong>144 Hz</strong>
+                    <p>Full HD</p>
+                </div>
+
+            </div>
+
+
+            <div class="total">
+                <p>STATUS DO PC</p>
+                <strong>🟢 ONLINE</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================
+         DESEMPENHO
+    ====================== -->
+
+    <div class="window" id="performanceWindow">
+
+        <div class="titlebar">
+
+            <h2>📊 Monitor de Desempenho</h2>
+
+            <div class="window-buttons">
+                <button class="close"
+                    onclick="closeWindow('performanceWindow')">
+                    ×
+                </button>
+            </div>
+
+        </div>
+
+
+        <div class="performance">
+
+            <h1>Desempenho do PC</h1>
+
+            <div class="performance-grid">
+
+                <div class="metric">
+                    <h3>FPS</h3>
+                    <strong id="fps">144</strong>
+
+                    <div class="bar">
+                        <div class="bar-fill" id="fpsBar"></div>
+                    </div>
+                </div>
+
+
+                <div class="metric">
+                    <h3>CPU</h3>
+                    <strong id="cpu">38%</strong>
+
+                    <div class="bar">
+                        <div class="bar-fill" id="cpuBar"></div>
+                    </div>
+                </div>
+
+
+                <div class="metric">
+                    <h3>GPU</h3>
+                    <strong id="gpu">64%</strong>
+
+                    <div class="bar">
+                        <div class="bar-fill" id="gpuBar"></div>
+                    </div>
+                </div>
+
+
+                <div class="metric">
+                    <h3>RAM</h3>
+                    <strong id="ram">47%</strong>
+
+                    <div class="bar">
+                        <div class="bar-fill" id="ramBar"></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================
+         CONFIGURAÇÕES
+    ====================== -->
+
+    <div class="window" id="settingsWindow">
+
+        <div class="titlebar">
+
+            <h2>⚙️ Configurações</h2>
+
+            <div class="window-buttons">
+                <button class="close"
+                    onclick="closeWindow('settingsWindow')">
+                    ×
+                </button>
+            </div>
+
+        </div>
+
+
+        <div class="settings">
+
+            <h1>Configurações Gamer</h1>
+
+            <br>
+
+            <div class="setting">
+
+                <label>Qualidade gráfica</label>
+
+                <select onchange="showMessage('Gráficos: '+this.value)">
+                    <option>Baixa</option>
+                    <option>Média</option>
+                    <option>Alta</option>
+                    <option selected>Ultra</option>
+                </select>
+
+            </div>
+
+
+            <div class="setting">
+
+                <label>Limite de FPS</label>
+
+                <select onchange="showMessage('FPS configurado')">
+                    <option>60 FPS</option>
+                    <option>120 FPS</option>
+                    <option selected>144 FPS</option>
+                    <option>240 FPS</option>
+                </select>
+
+            </div>
+
+
+            <div class="setting">
+
+                <label>Modo de tela</label>
+
+                <select>
+                    <option selected>Tela cheia</option>
+                    <option>Janela</option>
+                    <option>Sem bordas</option>
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================
+         MINI GAME
+    ====================== -->
+
+    <div class="window" id="miniGameWindow">
+
+        <div class="titlebar">
+
+            <h2>🎯 Aim Trainer</h2>
+
+            <div class="window-buttons">
+                <button class="close"
+                    onclick="closeWindow('miniGameWindow')">
+                    ×
+                </button>
+            </div>
+
+        </div>
+
+
+        <div class="game-screen">
+
+            <div class="game-area" id="gameArea">
+
+                <div class="game-info-bar">
+                    <span>Pontos: <b id="score">0</b></span>
+                    <span>Clique no alvo 🎯</span>
+                </div>
+
+                <div
+                    class="player-character"
+                    id="target"
+                    onclick="hitTarget()">
+                    🎯
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================
+         START MENU
+    ====================== -->
+
+    <div class="start-menu" id="startMenu">
+
+        <h2>🎮 Virtual Gamer PC</h2>
+
+        <div class="start-item"
+            onclick="openWindow('gameWindow')">
+            🎮 Central de Jogos
+        </div>
+
+        <div class="start-item"
+            onclick="openWindow('buildWindow')">
+            🖥️ Meu PC
+        </div>
+
+        <div class="start-item"
+            onclick="openWindow('performanceWindow')">
+            📊 Desempenho
+        </div>
+
+        <div class="start-item"
+            onclick="openWindow('miniGameWindow')">
+            🎯 Aim Trainer
+        </div>
+
+        <div class="start-item"
+            onclick="openWindow('settingsWindow')">
+            ⚙️ Configurações
+        </div>
+
+    </div>
+
+
+    <!-- =====================
+         NOTIFICAÇÃO
+    ====================== -->
+
+    <div class="notification" id="notification"></div>
+
+
+    <!-- =====================
+         TASKBAR
+    ====================== -->
+
+    <div class="taskbar">
+
+        <button class="start-button"
+            onclick="toggleStart()">
+            🎮 START
+        </button>
+
+
+        <div class="task-buttons">
+
+            <button onclick="openWindow('gameWindow')">
+                🎮
+            </button>
+
+            <button onclick="openWindow('buildWindow')">
+                🖥️
+            </button>
+
+            <button onclick="openWindow('performanceWindow')">
+                📊
+            </button>
+
+            <button onclick="openWindow('miniGameWindow')">
+                🎯
+            </button>
+
+        </div>
+
+
+        <div class="clock" id="clock">
+            00:00
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   JANELAS
+========================= */
+
+function openWindow(id){
+
+    document
+        .getElementById(id)
+        .classList.add("active");
+
+    document
+        .getElementById("startMenu")
+        .classList.remove("active");
+}
+
+
+function closeWindow(id){
+
+    document
+        .getElementById(id)
+        .classList.remove("active");
+}
+
+
+function minimizeWindow(id){
+
+    closeWindow(id);
+}
+
+
+/* =========================
+   START MENU
+========================= */
+
+function toggleStart(){
+
+    document
+        .getElementById("startMenu")
+        .classList.toggle("active");
+
+}
+
+
+/* =========================
+   NOTIFICAÇÃO
+========================= */
+
+function showMessage(text){
+
+    const box =
+        document.getElementById("notification");
+
+    box.textContent = text;
+    box.classList.add("show");
+
+    setTimeout(() => {
+        box.classList.remove("show");
+    },2500);
+}
+
+
+/* =========================
+   INICIAR JOGO
+========================= */
+
+function launchGame(name){
+
+    showMessage("🎮 Iniciando "+name+"...");
+
+    setTimeout(() => {
+
+        showMessage(
+            "🟢 "+name+" está rodando!"
+        );
+
+    },1200);
+
+}
+
+
+/* =========================
+   FILTRO
+========================= */
+
+function filterGames(category,button){
+
+    document
+        .querySelectorAll(".game-sidebar button")
+        .forEach(btn =>
+            btn.classList.remove("selected")
+        );
+
+    button.classList.add("selected");
+
+    document
+        .querySelectorAll(".game")
+        .forEach(game => {
+
+            const cat =
+                game.dataset.category;
+
+            const fav =
+                game.dataset.favorite === "true";
+
+            if(
+                category === "all" ||
+                cat === category ||
+                (category === "favorite" && fav)
+            ){
+
+                game.style.display="block";
+
+            }else{
+
+                game.style.display="none";
+
+            }
+
+        });
+
+}
+
+
+/* =========================
+   PESQUISA
+========================= */
+
+function searchGames(){
+
+    const text =
+        document
+        .getElementById("search")
+        .value
+        .toLowerCase();
+
+    document
+        .querySelectorAll(".game")
+        .forEach(game => {
+
+            const name =
+                game.dataset.name.toLowerCase();
+
+            game.style.display =
+                name.includes(text)
+                ? "block"
+                : "none";
+
+        });
+
+}
+
+
+/* =========================
+   RELÓGIO
+========================= */
+
+function updateClock(){
+
+    const now = new Date();
+
+    const h =
+        String(now.getHours())
+        .padStart(2,"0");
+
+    const m =
+        String(now.getMinutes())
+        .padStart(2,"0");
+
+    document
+        .getElementById("clock")
+        .textContent = h+":"+m;
+
+}
+
+setInterval(updateClock,1000);
+updateClock();
+
+
+/* =========================
+   MONITOR DE DESEMPENHO
+========================= */
+
+function updatePerformance(){
+
+    const fps =
+        Math.floor(120 + Math.random()*40);
+
+    const cpu =
+        Math.floor(25 + Math.random()*50);
+
+    const gpu =
+        Math.floor(45 + Math.random()*45);
+
+    const ram =
+        Math.floor(35 + Math.random()*40);
+
+    document.getElementById("fps")
+        .textContent=fps;
+
+    document.getElementById("cpu")
+        .textContent=cpu+"%";
+
+    document.getElementById("gpu")
+        .textContent=gpu+"%";
+
+    document.getElementById("ram")
+        .textContent=ram+"%";
+
+    document.getElementById("fpsBar")
+        .style.width=Math.min(fps/2.4,100)+"%";
+
+    document.getElementById("cpuBar")
+        .style.width=cpu+"%";
+
+    document.getElementById("gpuBar")
+        .style.width=gpu+"%";
+
+    document.getElementById("ramBar")
+        .style.width=ram+"%";
+
+}
+
+setInterval(updatePerformance,1500);
+
+
+/* =========================
+   AIM TRAINER
+========================= */
+
+let score=0;
+
+function hitTarget(){
+
+    score++;
+
+    document
+        .getElementById("score")
+        .textContent=score;
+
+    const target =
+        document.getElementById("target");
+
+    const area =
+        document.getElementById("gameArea");
+
+    const maxX =
+        area.clientWidth - 60;
+
+    const maxY =
+        area.clientHeight - 60;
+
+    const x =
+        Math.random()*maxX;
+
+    const y =
+        45 + Math.random()*(maxY-45);
+
+    target.style.left=x+"px";
+    target.style.top=y+"px";
+
+}
+
+
+/* =========================
+   TECLA ESC
+========================= */
+
+document.addEventListener("keydown",(event)=>{
+
+    if(event.key === "Escape"){
+
+        document
+            .querySelectorAll(".window")
+            .forEach(window => {
+                window.classList.remove("active");
+            });
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
+
+Como usar: copie o código inteiro → salve como "index.html" → abra no Chrome/Edge/Firefox. O PC virtual já inicia com a Central de Jogos aberta.
+
+A build é simulada dentro do PC virtual; ela não transforma seu celular/computador nessas peças reais. O Aim Trainer, por outro lado, é um mini-game que funciona diretamente no navegador.
