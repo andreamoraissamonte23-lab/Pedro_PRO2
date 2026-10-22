@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PC Gamer Virtual</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    height: 100vh;
+    overflow: hidden;
+    background: #080b14;
+    color: white;
+}
+
+/* DESKTOP */
+.desktop {
+    width: 100%;
+    height: 100vh;
+    background:
+        radial-gradient(circle at 20% 20%, #24105c, transparent 35%),
+        radial-gradient(circle at 80% 70%, #003f5c, transparent 35%),
+        linear-gradient(135deg, #070914, #10152a);
+    position: relative;
+}
+
+/* ÍCONES */
+.icons {
+    position: absolute;
+    top: 25px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.icon {
+    width: 80px;
+    text-align: center;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 10px;
+    transition: .2s;
+}
+
+.icon:hover {
+    background: rgba(255,255,255,.12);
+}
+
+.icon span {
+    font-size: 38px;
+    display: block;
+}
+
+.icon p {
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+/* JANELA */
+.window {
+    position: absolute;
+    width: min(900px, 92vw);
+    height: min(600px, 75vh);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(12,15,28,.97);
+    border: 1px solid #343b60;
+    border-radius: 14px;
+    box-shadow: 0 20px 70px rgba(0,0,0,.7);
+    display: none;
+    overflow: hidden;
+}
+
+.window.active {
+    display: block;
+}
+
+.titlebar {
+    height: 48px;
+    background: #151a30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    border-bottom: 1px solid #303653;
+}
+
+.titlebar h2 {
+    font-size: 16px;
+}
+
+.close {
+    background: #e63946;
+    border: 0;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+/* CENTRAL */
+.game-center {
+    height: calc(100% - 48px);
+    display: flex;
+}
+
+/* MENU */
+.sidebar {
+    width: 190px;
+    background: #0c1020;
+    padding: 15px;
+    border-right: 1px solid #292f4b;
+}
+
+.sidebar button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 8px;
+    background: transparent;
+    color: #bfc6e8;
+    border: 0;
+    border-radius: 8px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.sidebar button:hover,
+.sidebar button.selected {
+    background: #252b4b;
+    color: white;
+}
+
+/* CONTEÚDO */
+.content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.top {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.search {
+    flex: 1;
+    background: #171c32;
+    color: white;
+    border: 1px solid #343b60;
+    padding: 12px 15px;
+    border-radius: 9px;
+    outline: none;
+}
+
+.profile {
+    background: #171c32;
+    padding: 12px 15px;
+    border-radius: 9px;
+}
+
+/* JOGOS */
+.games {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.game {
+    background: #151a2e;
+    border: 1px solid #292f4b;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: .2s;
+}
+
+.game:hover {
+    transform: translateY(-4px);
+    border-color: #6675ff;
+}
+
+.cover {
+    height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 45px;
+    background: linear-gradient(135deg, #27145e, #0b5364);
+}
+
+.game-info {
+    padding: 12px;
+}
+
+.game-info h3 {
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+
+.game-info p {
+    color: #8991b7;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.play {
+    width: 100%;
+    padding: 9px;
+    border: 0;
+    border-radius: 7px;
+    background: #5968ff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.play:hover {
+    background: #7280ff;
+}
+
+/* STATUS */
+.status {
+    margin-top: 25px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.stat {
+    background: #11162a;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.stat small {
+    color: #858cab;
+}
+
+.stat strong {
+    display: block;
+    margin-top: 6px;
+    font-size: 20px;
+}
+
+/* BARRA */
+.taskbar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 55px;
+    background: rgba(8,10,19,.92);
+    backdrop-filter: blur(15px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 18px;
+    border-top: 1px solid #292f45;
+}
+
+.start {
+    background: #5968ff;
+    border: 0;
+    color: white;
+    padding: 10px 17px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.task-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.task-icons button {
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 8px;
+    background: #171c30;
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.clock {
+    font-size: 13px;
+    color: #cbd0e7;
+}
+
+/* MENU INICIAR */
+.start-menu {
+    position: absolute;
+    bottom: 65px;
+    left: 15px;
+    width: 280px;
+    background: rgba(14,18,34,.98);
+    border: 1px solid #343b60;
+    border-radius: 14px;
+    padding: 18px;
+    display: none;
+    box-shadow: 0 15px 50px rgba(0,0,0,.6);
+}
+
+.start-menu.active {
+    display: block;
+}
+
+.start-menu h2 {
+    margin-bottom: 15px;
+}
+
+.start-item {
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.start-item:hover {
+    background: #252b4b;
+}
+
+/* NOTIFICAÇÃO */
+.notification {
+    position: absolute;
+    right: 20px;
+    bottom: 75px;
+    background: #171c30;
+    border: 1px solid #343b60;
+    padding: 15px 20px;
+    border-radius: 10px;
+    display: none;
+}
+
+.notification.show {
+    display: block;
+}
+
+/* RESPONSIVO */
+@media(max-width: 600px) {
+    .sidebar {
+        width: 130px;
+    }
+
+    .status {
+        grid-template-columns: 1fr;
+    }
+
+    .top {
+        flex-direction: column;
+    }
+
+    .window {
+        height: 78vh;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="desktop">
+
+    <!-- ÍCONES -->
+    <div class="icons">
+        <div class="icon" onclick="openCenter()">
+            <span>🎮</span>
+            <p>Central de Jogos</p>
+        </div>
+
+        <div class="icon" onclick="showMessage('Meu Computador')">
+            <span>💻</span>
+            <p>Meu PC</p>
+        </div>
+
+        <div class="icon" onclick="showMessage('Configurações abertas')">
+            <span>⚙️</span>
+            <p>Configurações</p>
+        </div>
+    </div>
+
+
+    <!-- CENTRAL DE JOGOS -->
+    <div class="window" id="gameWindow">
+
+        <div class="titlebar">
+            <h2>🎮 Central de Jogos</h2>
+            <button class="close" onclick="closeCenter()">×</button>
+        </div>
+
+        <div class="game-center">
+
+            <aside class="sidebar">
+
+                <button class="selected" onclick="filterGames('all', this)">
+                    🏠 Início
+                </button>
+
+                <button onclick="filterGames('action', this)">
+                    ⚔️ Ação
+                </button>
+
+                <button onclick="filterGames('racing', this)">
+                    🏎️ Corrida
+                </button>
+
+                <button onclick="filterGames('sport', this)">
+                    ⚽ Esportes
+                </button>
+
+                <button onclick="filterGames('favorite', this)">
+                    ⭐ Favoritos
+                </button>
+
+            </aside>
+
+
+            <main class="content">
+
+                <div class="top">
+
+                    <input
+                        class="search"
+                        id="search"
+                        type="text"
+                        placeholder="🔍 Procurar jogo..."
+                        oninput="searchGames()"
+                    >
+
+                    <div class="profile">
+                        👤 Player
+                    </div>
+
+                </div>
+
+                <h2 style="margin-bottom:15px;">
+                    Biblioteca
+                </h2>
+
+                <div class="games" id="games">
+
+                    <div class="game" data-name="Cyber Arena"
+                         data-category="action"
+                         data-favorite="true">
+
+                        <div class="cover">🤖</div>
+
+                        <div class="game-info">
+                            <h3>Cyber Arena</h3>
+                            <p>Ação • Online</p>
+
+                            <button class="play"
+                                onclick="playGame('Cyber Arena')">
+                                ▶ Jogar
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                    <div class="game" data-name="Speed Legends"
+                         data-category="racing"
+                         data-favorite="false">
+
+                        <div class="cover">🏎️</div>
+
+                        <div class="game-info">
+                            <h3>Speed Legends</h3>
+                            <p>Corrida • 3D</p>
+
+                            <button class="play"
+                                onclick="playGame('Speed Legends')">
+                                ▶ Jogar
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                    <div class="game" data-name="Football Stars"
+                         data-category="sport"
+                         data-favorite="true">
+
+                        <div class="cover">⚽</div>
+
+                        <div class="game-info">
+                            <h3>Football Stars</h3>
+                            <p>Esportes • Multiplayer</p>
+
+                            <button class="play"
+                                onclick="playGame('Football Stars')">
+                                ▶ Jogar
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                    <div class="game" data-name="Galaxy Battle"
+                         data-category="action"
+                         data-favorite="false">
+
+                        <div class="cover">🚀</div>
+
+                        <div class="game-info">
+                            <h3>Galaxy Battle</h3>
+                            <p>Ação • Ficção</p>
+
+                            <button class="play"
+                                onclick="playGame('Galaxy Battle')">
+                                ▶ Jogar
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                    <div class="game" data-name="Street Racer"
+                         data-category="racing"
+                         data-favorite="false">
+
+                        <div class="cover">🏁</div>
+
+                        <div class="game-info">
+                            <h3>Street Racer</h3>
+                            <p>Corrida • Arcade</p>
+
+                            <button class="play"
+                                onclick="playGame('Street Racer')">
+                                ▶ Jogar
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                    <div class="game"
